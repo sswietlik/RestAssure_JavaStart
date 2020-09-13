@@ -13,34 +13,28 @@ import static io.restassured.RestAssured.given;
 public class BasicHttpMethodsTests {
 
 
-
-
     @Test
-    public void givenPetWhenPostPetThenPetIsCreatedTest1() {
+    public void givenPetWhenPostPetThenPetIsCreatedTest(){
+        Category category = new Category();
+        category.setId(1);
+        category.setName("dogs");
 
-        String pet = "{\n" +
-                "  \"id\": 123,\n" +
-                "  \"category\": {\n" +
-                "    \"id\": 1,\n" +
-                "    \"name\": \"dogs\"\n" +
-                "  },\n" +
-                "  \"name\": \"Burek\",\n" +
-                "  \"photoUrls\": [\n" +
-                "    \"http://photos.com/dog1.jpg\"\n" +
-                "  ],\n" +
-                "  \"tags\": [\n" +
-                "    {\n" +
-                "      \"id\": 1,\n" +
-                "      \"name\": \"dogs-category\"\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"status\": \"available\"\n" +
-                "}";
+        Tag tag = new Tag();
+        tag.setId(1);
+        tag.setName("dogs-category");
+
+        Pet pet = new Pet();
+        pet.setId(123);
+        pet.setCategory(category);
+        pet.setPhotoUrls(Collections.singletonList("http://photos.com/dog1.jpg"));
+        pet.setTags(Collections.singletonList(tag));
+        pet.setStatus("available");
 
         given().log().all().body(pet).contentType("application/json")
                 .when().post("https://swaggerpetstore.przyklady.javastart.pl/v2/pet")
                 .then().log().all().statusCode(200);
     }
+
 
     @Test
     public void givenExistingPetIdWhenGetPetThenReturnPetTest() {
@@ -100,30 +94,10 @@ public class BasicHttpMethodsTests {
         pet.setName("Agat");
 
         given().log().all().contentType("application/json")
-                .pathParam("petId",445)
+                .pathParam("petId",pet.getId())
                 .when().delete("https://swaggerpetstore.przyklady.javastart.pl/v2/pet")
                 .then().log().all().statusCode(200);
     }
 
-    @Test
-    public void givenPetWhenPostPetThenPetIsCreatedTest(){
-        Category category = new Category();
-        category.setId(1);
-        category.setName("dogs");
 
-        Tag tag = new Tag();
-        tag.setId(1);
-        tag.setName("dogs-category");
-
-        Pet pet = new Pet();
-        pet.setId(123);
-        pet.setCategory(category);
-        pet.setPhotoUrls(Collections.singletonList("http://photos.com/dog1.jpg"));
-        pet.setTags(Collections.singletonList(tag));
-        pet.setStatus("available");
-
-        given().log().all().body(pet).contentType("application/json")
-                .when().post("https://swaggerpetstore.przyklady.javastart.pl/v2/pet")
-                .then().log().all().statusCode(200);
-    }
 }
