@@ -1,7 +1,7 @@
 package pl.javastart.restassured.test.pl.javastart.restassured.test.tasks;
 
 import org.testng.annotations.Test;
-import pl.javastart.main.pojo.User;
+import pl.javastart.main.pojo.User.User;
 
 import static io.restassured.RestAssured.given;
 
