@@ -5,10 +5,10 @@ import pl.javastart.main.pojo.User;
 
 import static io.restassured.RestAssured.given;
 
-public class UserCreationTests {
+public class UserUpdateTests {
 
     @Test
-    public void givenCorrectUserDataWhenCreateUserThenUserIsCreatedTest() {
+    public void givenCorrectUserDataWhenFirstNameLastNameAreUpdatedThenUserDataIsUpdatedTest(){
         User user = new User();
         user.setId(445);
         user.setUsername("firstuser");
@@ -19,34 +19,28 @@ public class UserCreationTests {
         user.setPhone("+123456789");
         user.setUserStatus(123);
 
-//        String user =
-//                "{  \n" +
-//                        "   \"id\": 445,\n" +
-//                        "   \"username\": \"firstuser\",\n" +
-//                        "   \"firstName\": \"Krzysztof\",\n" +
-//                        "   \"lastName\": \"Kowalski\",\n" +
-//                        "   \"email\": \"krzysztof@test.com\",\n" +
-//                        "   \"password\": \"password\",\n" +
-//                        "   \"phone\": \"+123456789\",\n" +
-//                        "   \"userStatus\": 123\n" +
-//                 "}";
-
         given().log().all().contentType("application/json")
                 .body(user)
                 .when().post("https://swaggerpetstore.przyklady.javastart.pl/v2/user")
-                .then().log().all().statusCode(200);
+                .then().log().all();
+        user.setFirstName("Lucyfer");
+        user.setLastName("Szatański");
 
-        given().log().all().contentType("application/json")
-                .pathParam("username", user.getUsername())
+
+        given().log().all()
+                    .contentType("application/json")
+                    .pathParam("username",user.getUsername())
+                    .body(user)
                 .when().get("https://swaggerpetstore.przyklady.javastart.pl/v2/user/{username}")
                 .then().log().all().statusCode(200);
 
+        given().log().all()
+                    .contentType("application/json")
+                    .pathParam("lastname",user.getUsername())
+                    .body(user)
+                .when().get("https://swaggerpetstore.przyklady.javastart.pl/v2/user/{username}")
+                .then().log().all().statusCode(200);
+
+
     }
-
-
 }
-
-
-
-
-
