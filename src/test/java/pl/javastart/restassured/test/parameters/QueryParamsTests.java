@@ -5,9 +5,12 @@ import pl.javastart.main.pojo.Category;
 import pl.javastart.main.pojo.Pet;
 import pl.javastart.main.pojo.Tag;
 
+import java.util.Arrays;
 import java.util.Collections;
 
+import static io.restassured.RestAssured.authentication;
 import static io.restassured.RestAssured.given;
+import static org.testng.Assert.assertTrue;
 
 public class QueryParamsTests {
 
@@ -47,11 +50,18 @@ public class QueryParamsTests {
 
         given().log().all()
                         .body(pet)
-                        .contentType("applicatiob/json")
+                        .contentType("application/json")
                 .when().post("https://swaggerpetstore.przyklady.javastart.pl/v2/pet")
                 .then().log().all().statusCode(200);
 
-        Pet[] pets = new 
+        Pet[] pets = given().log().all()
+                        .body(pet)
+                        .contentType("application/json")
+                        .queryParam("status","sold")
+                .when().get("https://swaggerpetstore.przyklady.javastart.pl/v2/pet/findByStatus")
+                .then().log().all().statusCode(200).extract().as(Pet[].class);
+
+        assertTrue(Arrays.asList(pets).size() > 0, "List of pets");
 
 
 

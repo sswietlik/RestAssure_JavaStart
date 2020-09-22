@@ -1,6 +1,10 @@
 package http.methods;
 
 
+import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import pl.javastart.main.pojo.Category;
 import pl.javastart.main.pojo.Pet;
@@ -8,9 +12,16 @@ import pl.javastart.main.pojo.Tag;
 
 import java.util.Collections;
 
+import static io.restassured.RestAssured.filters;
 import static io.restassured.RestAssured.given;
 
 public class BasicHttpMethodsTests {
+    @BeforeClass
+    public void setupConfiguration(){
+        RestAssured.baseURI = "https://swaggerpetstore.przyklady.javastart.pl";
+        RestAssured.basePath = "v2";
+        RestAssured.filters(new RequestLoggingFilter(), new  ResponseLoggingFilter());
+    }
 
 
     @Test
@@ -30,19 +41,19 @@ public class BasicHttpMethodsTests {
         pet.setTags(Collections.singletonList(tag));
         pet.setStatus("available");
 
-        given().log().all().body(pet).contentType("application/json")
-                .when().post("https://swaggerpetstore.przyklady.javastart.pl/v2/pet")
-                .then().log().all().statusCode(200);
+        given().body(pet).contentType("application/json")
+                .when().post("pet")
+                .then().statusCode(200);
     }
 
 
     @Test
     public void givenExistingPetIdWhenGetPetThenReturnPetTest() {
-        given().log().method().log().uri()
+        given()
                 .pathParam("petId",1)
                 .when()
-                .get("https://swaggerpetstore.przyklady.javastart.pl/v2/pet/{petId}")
-                .then().log().all().statusCode(200);
+                .get("pet/{petId}")
+                .then().statusCode(200);
     }
 
     @Test
@@ -63,9 +74,9 @@ public class BasicHttpMethodsTests {
         pet.setTags(Collections.singletonList(tag));
         pet.setStatus("available");
 
-        given().log().all().body(pet).contentType("application/json")
-                .when().put("https://swaggerpetstore.przyklady.javastart.pl/v2/pet")
-                .then().log().all().statusCode(200);
+        given().body(pet).contentType("application/json")
+                .when().put("pet")
+                .then().statusCode(200);
 
     }
 
@@ -87,16 +98,16 @@ public class BasicHttpMethodsTests {
         pet.setTags(Collections.singletonList(tag));
         pet.setStatus("available");
 
-        given().log().all().contentType("application/json")
-                .when().post("https://swaggerpetstore.przyklady.javastart.pl/v2/pet")
-                .then().log().all().statusCode(200);
+        given().contentType("application/json")
+                .when().post("pet")
+                .then().statusCode(200);
 
         pet.setName("Agat");
 
-        given().log().all().contentType("application/json")
+        given().contentType("application/json")
                 .pathParam("petId",pet.getId())
-                .when().delete("https://swaggerpetstore.przyklady.javastart.pl/v2/pet")
-                .then().log().all().statusCode(200);
+                .when().delete("pet/{petId}")
+                .then().statusCode(200);
     }
 
 
