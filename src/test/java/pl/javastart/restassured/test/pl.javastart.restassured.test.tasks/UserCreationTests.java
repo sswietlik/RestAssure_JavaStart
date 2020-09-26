@@ -27,28 +27,30 @@ public class UserCreationTests {
         user.setPhone("+123456789");
         user.setUserStatus(123);
 
-//        String user =
-//                "{  \n" +
-//                        "   \"id\": 445,\n" +
-//                        "   \"username\": \"firstuser\",\n" +
-//                        "   \"firstName\": \"Krzysztof\",\n" +
-//                        "   \"lastName\": \"Kowalski\",\n" +
-//                        "   \"email\": \"krzysztof@test.com\",\n" +
-//                        "   \"password\": \"password\",\n" +
-//                        "   \"phone\": \"+123456789\",\n" +
-//                        "   \"userStatus\": 123\n" +
-//                 "}";
 
-        given().log().all().contentType("application/json")
+        given().contentType("application/json")
                 .body(user)
                 .when().post("user")
-                .then().log().all().statusCode(200);
+                .then()
+                .assertThat().body("code", equalTo(200))
+                .assertThat().body("type", equalTo("unknown"))
+                .assertThat().body("message", equalTo("445"))
+                .assertThat().statusCode(200);
 
-        given().log().all().contentType("application/json")
+        given().contentType("application/json")
                 .pathParam("username", user.getUsername())
                 .when().get("user/{username}")
-                .then().log().all().statusCode(200);
-
+                .then()
+                .assertThat().body("id", equalTo(445))
+                .assertThat().body("username", equalTo("firstuser"))
+                .assertThat().body("firstName", equalTo("Krzysztof"))
+                .assertThat().body("lastName", equalTo("Kowalski"))
+                .assertThat().body("email", equalTo("krzysztof@test.com"))
+                .assertThat().body("password", equalTo("password"))
+                .assertThat().body("phone", equalTo("+123456789"))
+                .assertThat().body("userStatus", equalTo(123))
+                .assertThat().body("user",eq)
+                .assertThat().statusCode(200);
     }
 
 
